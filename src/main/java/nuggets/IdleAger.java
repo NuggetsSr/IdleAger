@@ -46,7 +46,7 @@ public class IdleAger {
     }
 
     public static void warnUser(){
-        JOptionPane.showOptionDialog(
+        int result = JOptionPane.showOptionDialog(
             frame, 
             "GET BACK TO WORK",
             "WARNING",
@@ -56,7 +56,9 @@ public class IdleAger {
             new Object[]{"OK"}, 
             "OK"
         );
-        resetTimer();
+        if(result == 0){
+            resetTimer();
+        }
         // JOptionPane.showConfirmDialog(frame, "hello world");
     }
 
