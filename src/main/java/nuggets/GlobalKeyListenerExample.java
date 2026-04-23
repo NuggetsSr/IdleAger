@@ -29,7 +29,6 @@ public class GlobalKeyListenerExample implements NativeKeyListener {
         // call method to update idle time
 		System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         him.updateKeystroke();
-        
 	}
 
 	public static void init() {
