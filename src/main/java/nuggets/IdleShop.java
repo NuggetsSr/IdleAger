@@ -15,8 +15,23 @@ public class IdleShop{
 
     public static void initShop(){
         items.add(upgrade1);
+        // items.add(upgrade1);
+        // items.add(upgrade1);
         items.add(upgrade2);
         items.add(upgrade3);
+    }
+
+    // public static int itemsLen(){
+    //     return items.size();
+    // }
+    // public static void printItems(){
+    //     for (IdleItem i : items) {
+    //         System.out.println(i.itemInd);
+    //     }
+    // }
+
+    public static double firstItem(){
+        return items.get(0).itemPrice;
     }
 
     public static double getItemCost(int i){

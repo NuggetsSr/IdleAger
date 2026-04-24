@@ -95,6 +95,7 @@ public class IdleAger {
         UIdata.focusTimer = maxFdur;
         IdleShop.initShop();
         IdleUI.init();
+        // IdleShop.printItems();
         timer.start();
         System.out.println();
 

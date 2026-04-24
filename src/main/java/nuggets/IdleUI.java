@@ -33,6 +33,8 @@ public class IdleUI{
 
     private static JLabel UIUncCoin = new JLabel("",SwingConstants.CENTER); // curency earned from typing
     private static JLabel quota = new JLabel("", SwingConstants.CENTER);
+    private static JLabel UCperQ = new JLabel("", SwingConstants.CENTER);
+    private static JLabel timeTillPassive = new JLabel("",SwingConstants.CENTER);
 
     private static JTextField UIGtimer = new JTextField();
     private static JTextField UIGUncCoin = new JTextField("");
@@ -41,7 +43,7 @@ public class IdleUI{
     private static JLabel up1cost = new JLabel("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0)));
     private static JLabel up2cost = new JLabel("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1)));
     private static JLabel up3cost = new JLabel("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2)));
-    private static JPanel panel = new JPanel();
+    private static JPanel MPanel = new JPanel();
     private static ImageIcon icon = new ImageIcon("/Users/yifancai/Documents/IdleAger/image.png");
     private static JLabel animation = new JLabel(icon);
     private static JButton sButton = new JButton("Unpause");
@@ -68,13 +70,15 @@ public class IdleUI{
         // if(!isLazy() && !paused){
             UIcharCount.setText("Letters Typed: " + Integer.toString(UIdata.charCount));
             UItimer.setText("Time Left: " + formatTime(UIdata.focusTimer/1000));
-            UIUncCoin.setText("Unc Coin Earned: " + Double.toString(UIdata.charCurrency));
+            UIUncCoin.setText("Unc Coin Total: " + Double.toString(UIdata.charCurrency));
+            UCperQ.setText("Unc Coin Earned Per Quota: " + Integer.toString(IdleItem.UCearned));
+            timeTillPassive.setText("Passive Income Interval: " +formatTime(IdleItem.UCpassive/1000));
             sButton.setText((IdleAger.getPause() ? "Unpause":"Pause"));
             quota.setText("Quota: " + Integer.toString(IdleAger.getCurrQuota()) + " / " + Integer.toString(IdleItem.charReq));
             Gquota.setText("Quota: " + Integer.toString(IdleAger.getCurrQuota()) + " / " + Integer.toString(IdleItem.charReq));
-            up1cost.setText("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0))+ " Owned: " + Integer.toString(IdleShop.getItemProg(0))); 
-            up2cost.setText("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1))+ " Owned: " + Integer.toString(IdleShop.getItemProg(1))); 
-            up3cost.setText("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2))+ " Owned: " + Integer.toString(IdleShop.getItemProg(2))); 
+            up1cost.setText("Up 1 Cost: " + String.format("%.2f", IdleShop.getItemCost(0)) + " Owned: " + Integer.toString(IdleShop.getItemProg(0))); 
+            up2cost.setText("Up 2 Cost: " + String.format("%.2f", IdleShop.getItemCost(1)) + " Owned: " + Integer.toString(IdleShop.getItemProg(1))); 
+            up3cost.setText("Up 3 Cost: " + String.format("%.2f", IdleShop.getItemCost(2)) + " Owned: " + Integer.toString(IdleShop.getItemProg(2))); 
         // }
     }
 
@@ -85,7 +89,7 @@ public class IdleUI{
         frameCounter+=1;
     }
 
-    private static Timer aniTimer = new Timer (300, e -> updateGameUI());
+    private static final Timer aniTimer = new Timer (300, e -> updateGameUI());
     private static Timer timer = new Timer(tickAmount, e-> updateTrackerUI());
 
 
@@ -259,24 +263,30 @@ public class IdleUI{
         // Gframe.add(GPanel);
 
         // button panel for buttons (start session, end session, switch to game)
-        JPanel bPanel = new JPanel();
-        bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.Y_AXIS));
-        bPanel.add(sButton);
-        bPanel.add(EnterSButton);
-        bPanel.setSize(240,240);
-        panel.setLayout(new FlowLayout());
-        panel.add(UIcharCount);
-        panel.add(quota);
-        panel.add(UItimer);
-        panel.add(UIUncCoin);
-        panel.add(bPanel);
+        JPanel BPanel = new JPanel();
+        BPanel.setLayout(new BoxLayout(BPanel, BoxLayout.Y_AXIS));
+        BPanel.add(sButton);
+        BPanel.add(EnterSButton);
+        BPanel.setSize(240,240);
+        MPanel.setLayout(new FlowLayout());
+        MPanel.add(UIcharCount);
+        MPanel.add(quota);
+        MPanel.add(UItimer);
+        MPanel.add(UIUncCoin);
+        MPanel.add(UCperQ);
+        MPanel.add(timeTillPassive);
+        MPanel.add(BPanel);
         // Mframe.setLayout();
-        Mframe.add(panel);
+        Mframe.add(MPanel);
         // Mframe.pack();
         Mframe.setVisible(true);
         // Gframe.setVisible(true);
         System.out.println("done");
         timer.start();
+    }
+
+    public static Timer getTimer() {
+        return timer;
     }
 
 
