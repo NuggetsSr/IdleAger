@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,6 +22,7 @@ import javax.swing.Timer;
 public class IdleUI{
     private static JFrame Mframe = new JFrame("Tracker");
     private static JFrame Gframe = new JFrame("Game");
+    private static JFrame Sframe = new JFrame("Shop");
     private static JFrame popFrame = new JFrame("Warning"); // frame for the option panel 
     private static JLabel UIcharCount = new JLabel("",SwingConstants.CENTER);
     private static JLabel UItimer = new JLabel("",SwingConstants.CENTER);
@@ -33,7 +35,8 @@ public class IdleUI{
     private static JButton eButton = new JButton("End Session");
     private static JButton gButton = new JButton("Switch Game State");
     private static JButton tButton = new JButton("Switch Track State");
-    private static UIdata displayData = new UIdata();
+    private static JButton EnterSButton = new JButton("Open Shop");
+    private static JButton ExitSButton = new JButton("Exit Shop");
 
     private static int aniFrame = -240; // amount of pixels to shift animation by 
     private static final int tickAmount = 16; // framerate
@@ -47,21 +50,23 @@ public class IdleUI{
         return String.valueOf(hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
     }
 
-    private static void updateTrackerUI(UIdata data){
+    private static void updateTrackerUI(){
         // if(!isLazy() && !paused){
-            UIcharCount.setText("Letters Typed: " + Integer.toString(data.charCount));
-            UItimer.setText("Time Left: " + formatTime(data.focusTimer/1000));
-            UIUncCoin.setText("Unc Coin Earned: " + Integer.toString(data.charCurrency));
+            UIcharCount.setText("Letters Typed: " + Integer.toString(UIdata.charCount));
+            UItimer.setText("Time Left: " + formatTime(UIdata.focusTimer/1000));
+            UIUncCoin.setText("Unc Coin Earned: " + Integer.toString(UIdata.charCurrency));
         // }
     }
 
-    private static void updateGameUI(UIdata data){
+    private static void updateGameUI(){
         animation.setBounds(aniFrame * (frameCounter % 4),-10,960,240);
-        UIGUncCoin.setText("Unc Coin Earned: " + Integer.toString(data.charCurrency));
+        UIGUncCoin.setText("Unc Coin Earned: " + Integer.toString(UIdata.charCurrency));
         frameCounter+=1;
     }
 
-    private static Timer aniTimer = new Timer (300, e -> updateGameUI(displayData));
+    private static Timer aniTimer = new Timer (300, e -> updateGameUI());
+    private static Timer timer = new Timer(tickAmount, e-> updateTrackerUI());
+
 
     public static int warnPop(){
         return JOptionPane.showOptionDialog(
@@ -76,17 +81,15 @@ public class IdleUI{
         );
     }
 
-    private static void sGame(){
-        Mframe.setVisible(false);
-        Gframe.setVisible(true);
-    }
-    private static void eGame(){
-        Mframe.setVisible(true);
-        Gframe.setVisible(false);
+    private static void stateMachine(boolean inGame, boolean inShop){ // refactor
+        Mframe.setVisible(!inGame);
+        Gframe.setVisible(inGame);
+        Sframe.setVisible(inShop);
     }
 
     public static void init(){ // initializes all the UI
         GlobalKeyListenerExample.init();
+        // set an actionlistener in main, add it here
         sButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,15 +106,29 @@ public class IdleUI{
         gButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                sGame();
+                stateMachine(true,false);
             }
         });
         tButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                eGame();
+                stateMachine(false, false);
             }
         });
+
+        EnterSButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stateMachine(false, true);
+            }
+        });
+        ExitSButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stateMachine(false, false);
+            }
+        });
+
         
         aniTimer.start();
 
@@ -124,6 +141,16 @@ public class IdleUI{
         Mframe.setLocation(width-240, length-240);
         Mframe.setAlwaysOnTop(true);
         Mframe.setResizable(false);
+
+        Sframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Sframe.setSize(240,240);
+        Sframe.setLocation(width-240, length-240);
+        Sframe.setAlwaysOnTop(true);
+        Sframe.setResizable(false); 
+
+        JPanel SPanel = new JPanel();
+        SPanel.add(ExitSButton);
+        Sframe.add(SPanel);
 
         animation.setBounds(0,-10,960,240);
         tButton.setBounds(100, 50, 200, 200);
@@ -156,26 +183,27 @@ public class IdleUI{
 
         sButton.setSize(new Dimension(100,50));
         eButton.setSize(new Dimension(100,50));
-        //   
         
-        UIcharCount.setText("0");
         // button panel for buttons (start session, end session, switch to game)
         JPanel bPanel = new JPanel();
-        bPanel.setLayout(new BorderLayout());
-        bPanel.add(sButton, BorderLayout.NORTH);
-        bPanel.add(eButton, BorderLayout.CENTER);
-        bPanel.add(gButton, BorderLayout.SOUTH);
-        bPanel.setSize(50,240);
+        bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.Y_AXIS));
+        bPanel.add(sButton);
+        bPanel.add(eButton);
+        bPanel.add(EnterSButton);
+        bPanel.add(gButton);
+        bPanel.setSize(240,240);
         panel.setLayout(new FlowLayout());
         panel.add(UIcharCount);
         panel.add(UItimer);
         panel.add(UIUncCoin);
         panel.add(bPanel);
+        // Mframe.setLayout();
         Mframe.add(panel);
+        Mframe.pack();
         Mframe.setVisible(true);
 
         System.out.println("done");
-
+        timer.start();
     }
 
 

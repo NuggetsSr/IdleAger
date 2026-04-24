@@ -16,13 +16,12 @@ public class IdleAger {
     private static int moneyCounter = 1;
     
     private static Timer timer = new Timer(tickAmount, e-> update());
-
+    private static Timer UCtimer = new Timer(UIdata.UCpassive, e-> addUC()); // timer for passive gain
     //returns a string given time in minutes and seconds
-    private static UIdata displayData = new UIdata();    
     
     private static void update(){
         // updateTrackerUI(displayData);
-        convertCurrency(displayData);
+        convertUC();
         if(!paused){
             tickTimer();
         }
@@ -34,7 +33,7 @@ public class IdleAger {
 
     public static void updateKeystroke(){
         if(!isLazy() && !paused){ // fix: keystrokes made when warning is up or session is paused will not count towards progress 
-            displayData.charCount++;
+            UIdata.charCount++;
             resetTimer();
         }
     }
@@ -50,15 +49,31 @@ public class IdleAger {
         // JOptionPane.showConfirmDialog(frame, "hello world");
     }
 
-    private static void convertCurrency(UIdata data){
-        if(data.charCount > moneyCounter*100){
-            moneyCounter+=1;
-            data.charCurrency++;
+    private static void convertUC(){
+        if(UIdata.charCount > moneyCounter * UIdata.charReq){
+            moneyCounter += UIdata.UCearned;
+            UIdata.charCurrency++;
         }
     }
 
+    private static void addUC(){
+        UIdata.charCurrency += 1; // might add as future upgrade
+    }
+
+    private static void setCharReq(int newReq){
+        UIdata.charReq = newReq;
+    }
+
+    private static void setUCearned(int newUC){
+        UIdata.UCearned = newUC;
+    }
+
+    private static void setUCpassive(int newInterval){
+        UIdata.UCpassive = newInterval;
+    }
+
     private static boolean isLazy(){
-        return displayData.focusTimer <= 0;
+        return UIdata.focusTimer <= 0;
     }
 
     public static void setPause(boolean p){
@@ -66,17 +81,17 @@ public class IdleAger {
     }
 
     private static void resetTimer(){
-        displayData.focusTimer = maxFdur;
+        UIdata.focusTimer = maxFdur;
     }
 
     private  static void tickTimer(){
-        displayData.focusTimer -= tickAmount;
-        displayData.focusTimer = Math.max(0, displayData.focusTimer);
+        UIdata.focusTimer -= tickAmount;
+        UIdata.focusTimer = Math.max(0, UIdata.focusTimer);
     }
 
     public static void main(String[] args) {
         System.out.println("hello world");
-        displayData.focusTimer = maxFdur;
+        UIdata.focusTimer = maxFdur;
         IdleUI.init();
         timer.start();
     }
