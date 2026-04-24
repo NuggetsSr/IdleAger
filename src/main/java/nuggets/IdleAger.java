@@ -11,72 +11,30 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 /**
  *
  * @author yifancai
  */
 public class IdleAger {
-    static JFrame Mframe = new JFrame("Tracker");
-    static JFrame Gframe = new JFrame("Game");
-    static JFrame popFrame = new JFrame("Warning"); // frame for the option panel 
-    static JLabel UIcharCount = new JLabel("",SwingConstants.CENTER);
-    static JLabel UItimer = new JLabel("",SwingConstants.CENTER);
-    static JLabel UIUncCoin = new JLabel("",SwingConstants.CENTER); // curency earned from typing
-    static JLabel UIGUncCoin = new JLabel("",SwingConstants.CENTER);
-    static JPanel panel = new JPanel();
-    static ImageIcon icon = new ImageIcon("/Users/yifancai/Documents/IdleAger/image.png");
-    static JLabel animation = new JLabel(icon);
-
-    static JButton sButton = new JButton("Start Session");
-    static JButton eButton = new JButton("End Session");
-    static JButton gButton = new JButton("Switch Game State");
-    static JButton tButton = new JButton("Switch Track State");
-
-    static UIdata displayData = new UIdata();
-    static boolean paused = true;
-    static boolean inGame = false;
-    static final int tickAmount = 16; // framerate
-    static final int maxFdur = 60016; // focus duration
-    static int aniFrame = -240; // amount of pixels to shift animation by 
-    static int frameCounter = 0;
-    static int moneyCounter = 1;
+    private static boolean paused = true;
+    private static boolean inGame = false;
+    private static final int tickAmount = 16; // framerate
+    private static final int maxFdur = 60016; // focus duration
+    private static int moneyCounter = 1;
     
-    static Timer timer = new Timer(tickAmount, e-> update());
-    static Timer aniTimer = new Timer (300, e -> updateGameUI(displayData));
+    private static Timer timer = new Timer(tickAmount, e-> update());
 
     //returns a string given time in minutes and seconds
-    public static String formatTime(int s){
-        int seconds = s%60;
-        int minutes = s/60;
-        int hours = s/3600;
-        return String.valueOf(hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-    }
-
-    private static void updateTrackerUI(UIdata data){
-        // if(!isLazy() && !paused){
-            UIcharCount.setText("Letters Typed: " + Integer.toString(data.charCount));
-            UItimer.setText("Time Left: " + formatTime(data.focusTimer/1000));
-            UIUncCoin.setText("Unc Coin Earned: " + Integer.toString(data.charCurrency));
-        // }
-    }
-
-    private static void updateGameUI(UIdata data){
-        animation.setBounds(aniFrame * (frameCounter % 4),-10,960,240);
-        UIGUncCoin.setText("Unc Coin Earned: " + Integer.toString(data.charCurrency));
-        frameCounter+=1;
-    }
-
+    private static UIdata displayData = new UIdata();
+    private static IdleUI UI = new IdleUI();
+    
+    
     private static void update(){
-        updateTrackerUI(displayData);
+        // updateTrackerUI(displayData);
         convertCurrency(displayData);
         if(!paused){
             tickTimer();
@@ -95,17 +53,9 @@ public class IdleAger {
     }
 
     private static void warnUser(){ // need rewrite
-        int result = JOptionPane.showOptionDialog(
-            popFrame, 
-            "GET BACK TO WORK",
-            "WARNING",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.INFORMATION_MESSAGE,
-            null, 
-            new Object[]{"OK"}, 
-            "OK"
-        );
+        int result = UI.warnPop();
         
+        // call popup method 
         
         if(result == 0){
             resetTimer();
@@ -132,14 +82,6 @@ public class IdleAger {
         paused = true;
     }
 
-    private static void sGame(){
-        Mframe.setVisible(false);
-        Gframe.setVisible(true);
-    }
-    private static void eGame(){
-        Mframe.setVisible(true);
-        Gframe.setVisible(false);
-    }
 
     private static void resetTimer(){
         displayData.focusTimer = maxFdur;
@@ -198,32 +140,7 @@ public class IdleAger {
         sButton.setSize(new Dimension(100,50));
         eButton.setSize(new Dimension(100,50));
         //   
-        sButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startS();
-            }
-        });
-
-        eButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                endS();
-            }
-        });
-        gButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sGame();
-                aniTimer.start();
-            }
-        });
-        tButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                eGame();
-            }
-        });
+        
         
         UIcharCount.setText("0");
         // button panel for buttons (start session, end session, switch to game)
