@@ -14,6 +14,7 @@ public class IdleAger {
     private static final int tickAmount = 16; // framerate
     private static final int maxFdur = 60016; // focus duration
     private static int moneyCounter = 1;
+    private static int quotaCount = 0;
 
     
     private static Timer timer = new Timer(tickAmount, e-> update());
@@ -35,6 +36,7 @@ public class IdleAger {
     public static void updateKeystroke(){
         if(!isLazy() && !paused){ // fix: keystrokes made when warning is up or session is paused will not count towards progress 
             UIdata.charCount++;
+            quotaCount++;
             resetTimer();
         }
     }
@@ -80,6 +82,13 @@ public class IdleAger {
     private  static void tickTimer(){
         UIdata.focusTimer -= tickAmount;
         UIdata.focusTimer = Math.max(0, UIdata.focusTimer);
+    }
+
+    public static int getCurrQuota(){
+        if(quotaCount > IdleItem.charReq){
+            quotaCount = 0;
+        }
+        return quotaCount;
     }
 
     public static void main(String[] args) {

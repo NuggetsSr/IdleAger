@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -28,8 +29,15 @@ public class IdleUI{
     private static JFrame popFrame = new JFrame("Warning"); // frame for the option panel 
     private static JLabel UIcharCount = new JLabel("",SwingConstants.CENTER);
     private static JLabel UItimer = new JLabel("",SwingConstants.CENTER);
+    // private static JLabel UIGtimer = new JLabel("", SwingConstants.CENTER)
+
     private static JLabel UIUncCoin = new JLabel("",SwingConstants.CENTER); // curency earned from typing
-    private static JLabel UIGUncCoin = new JLabel("",SwingConstants.CENTER);
+    private static JLabel quota = new JLabel("", SwingConstants.CENTER);
+
+    private static JTextField UIGtimer = new JTextField();
+    private static JTextField UIGUncCoin = new JTextField("");
+    private static JTextField Gquota = new JTextField("");
+
     private static JLabel up1cost = new JLabel("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0)));
     private static JLabel up2cost = new JLabel("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1)));
     private static JLabel up3cost = new JLabel("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2)));
@@ -39,9 +47,9 @@ public class IdleUI{
     private static JButton sButton = new JButton("Unpause");
     private static JButton EnterSButton = new JButton("Open Shop");
     private static JButton ExitSButton = new JButton("Exit Shop");
-    private static JButton up1Button = new JButton("Decrease Quota");
-    private static JButton up2Button = new JButton("More Unc Coin per quota");
-    private static JButton up3Button = new JButton("Passive Unc Coin Generation");
+    private static JButton up1Button = new JButton("1. Decrease Quota");
+    private static JButton up2Button = new JButton("2. More Unc Coin per quota");
+    private static JButton up3Button = new JButton("3. Passive Unc Coin Generation");
 
     private static int aniFrame = -240; // amount of pixels to shift animation by 
     private static final int tickAmount = 16; // framerate
@@ -62,15 +70,17 @@ public class IdleUI{
             UItimer.setText("Time Left: " + formatTime(UIdata.focusTimer/1000));
             UIUncCoin.setText("Unc Coin Earned: " + Double.toString(UIdata.charCurrency));
             sButton.setText((IdleAger.getPause() ? "Unpause":"Pause"));
-
-            up1cost.setText("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0))); 
-            up2cost.setText("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1))); 
-            up3cost.setText("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2))); 
+            quota.setText("Quota: " + Integer.toString(IdleAger.getCurrQuota()) + " / " + Integer.toString(IdleItem.charReq));
+            Gquota.setText("Quota: " + Integer.toString(IdleAger.getCurrQuota()) + " / " + Integer.toString(IdleItem.charReq));
+            up1cost.setText("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0))+ " Owned: " + Integer.toString(IdleShop.getItemProg(0))); 
+            up2cost.setText("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1))+ " Owned: " + Integer.toString(IdleShop.getItemProg(1))); 
+            up3cost.setText("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2))+ " Owned: " + Integer.toString(IdleShop.getItemProg(2))); 
         // }
     }
 
     private static void updateGameUI(){
         animation.setBounds(aniFrame * (frameCounter % 4),-10,960,240);
+        UIGtimer.setText("Time Left: " + formatTime(UIdata.focusTimer/1000));
         UIGUncCoin.setText("Unc Coin Earned: " + Double.toString(UIdata.charCurrency));
         frameCounter+=1;
     }
@@ -131,7 +141,9 @@ public class IdleUI{
         Mframe.addWindowFocusListener(new WindowFocusListener(){
             @Override
             public void windowLostFocus(WindowEvent e){
-                stateMachine(true, false);
+                if(inFocus){
+                    stateMachine(true, false);
+                }
             }
 
             @Override
@@ -171,6 +183,7 @@ public class IdleUI{
         ExitSButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                inFocus = true;
                 stateMachine(false, false);
             }
         });
@@ -217,9 +230,23 @@ public class IdleUI{
         //layers for Game animation and buttons
         JLayeredPane Glayers = new JLayeredPane();
         JPanel GPanel = new JPanel();
+        UIGtimer.setEditable(false);
+        UIGtimer.setBorder(null);
+        UIGtimer.setOpaque(false);
+        Gquota.setEditable(false);
+        Gquota.setBorder(null);
+        Gquota.setOpaque(false);
+        UIGUncCoin.setEditable(false);
+        UIGUncCoin.setBorder(null);
+        UIGUncCoin.setOpaque(false);
         Glayers.setLayout(new FlowLayout());
         GPanel.setLayout(new BorderLayout());
-        UIGUncCoin.setForeground(new Color(255,255,255));
+        animation.setPreferredSize(new Dimension(240,240));
+        UIGtimer.setForeground(Color.WHITE);
+        Gquota.setForeground(Color.WHITE);
+        UIGUncCoin.setForeground(Color.WHITE);
+        GPanel.add(UIGtimer, BorderLayout.NORTH);
+        GPanel.add(Gquota, BorderLayout.CENTER);
         GPanel.add(UIGUncCoin, BorderLayout.SOUTH);
         GPanel.setOpaque(false);
         // Glayers.add(tButton, 2);
@@ -239,6 +266,7 @@ public class IdleUI{
         bPanel.setSize(240,240);
         panel.setLayout(new FlowLayout());
         panel.add(UIcharCount);
+        panel.add(quota);
         panel.add(UItimer);
         panel.add(UIUncCoin);
         panel.add(bPanel);
