@@ -37,6 +37,11 @@ public class IdleUI{
     private static JButton tButton = new JButton("Switch Track State");
     private static JButton EnterSButton = new JButton("Open Shop");
     private static JButton ExitSButton = new JButton("Exit Shop");
+    private static JButton up1Button = new JButton("Passive Unc Coin Generation");
+    private static JButton up2Button = new JButton("More Unc Coin per quota");
+    private static JButton up3Button = new JButton("Decrease Quota");
+
+    
 
     private static int aniFrame = -240; // amount of pixels to shift animation by 
     private static final int tickAmount = 16; // framerate
@@ -103,33 +108,55 @@ public class IdleUI{
                 IdleAger.setPause(true);
             }
         });
-        gButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stateMachine(true,false);
-            }
-        });
-        tButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stateMachine(false, false);
-            }
-        });
+        // gButton.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         stateMachine(true,false);
+        //     }
+        // });
+        // tButton.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         stateMachine(false, false);
+        //     }
+        // });
 
-        EnterSButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stateMachine(false, true);
-            }
-        });
-        ExitSButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stateMachine(false, false);
-            }
-        });
+        // EnterSButton.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         stateMachine(false, true);
+        //     }
+        // });
+        // ExitSButton.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         stateMachine(false, false);
+        //     }
+        // });
 
-        
+        // up1Button.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // trigger upgrade to be applied
+        //         // IdleShop.setCharReq();
+        //         // up1Button.setVisible(false);
+        //     }
+        // }); 
+        // up2Button.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // IdleShop.setUCearned();
+        //         // up2Button.setVisible(false);
+        //     }
+        // }); 
+        // up3Button.addActionListener(new ActionListener(){
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // IdleShop.setUCpassive();
+        //         // up3Button.setVisible(false);
+        //     }
+        // }); 
+
         aniTimer.start();
 
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -149,7 +176,17 @@ public class IdleUI{
         Sframe.setResizable(false); 
 
         JPanel SPanel = new JPanel();
+        JLabel up1cost = new JLabel("Up 1 Cost: " + IdleShop.getItemCost(0));
+        JLabel up2cost = new JLabel("Up 1 Cost: " + IdleShop.getItemCost(0));
+        JLabel up3cost = new JLabel("Up 1 Cost: " + IdleShop.getItemCost(0));
         SPanel.add(ExitSButton);
+        SPanel.add(UIUncCoin);
+        SPanel.add(up1cost);
+        SPanel.add(up1Button);
+        SPanel.add(up2cost);
+        SPanel.add(up2Button);
+        SPanel.add(up3cost);
+        SPanel.add(up3Button);
         Sframe.add(SPanel);
 
         animation.setBounds(0,-10,960,240);
@@ -180,9 +217,6 @@ public class IdleUI{
         Gframe.setResizable(false);
 
         popFrame.setSize(10000, 10000);
-
-        sButton.setSize(new Dimension(100,50));
-        eButton.setSize(new Dimension(100,50));
         
         // button panel for buttons (start session, end session, switch to game)
         JPanel bPanel = new JPanel();
@@ -199,9 +233,9 @@ public class IdleUI{
         panel.add(bPanel);
         // Mframe.setLayout();
         Mframe.add(panel);
-        Mframe.pack();
+        // Mframe.pack();
         Mframe.setVisible(true);
-
+        // Gframe.setVisible(true);
         System.out.println("done");
         timer.start();
     }

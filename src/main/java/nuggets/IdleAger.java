@@ -16,7 +16,7 @@ public class IdleAger {
     private static int moneyCounter = 1;
     
     private static Timer timer = new Timer(tickAmount, e-> update());
-    private static Timer UCtimer = new Timer(UIdata.UCpassive, e-> addUC()); // timer for passive gain
+    private static Timer UCtimer = new Timer(IdleItem.UCpassive, e-> addUC()); // timer for passive gain
     //returns a string given time in minutes and seconds
     
     private static void update(){
@@ -50,26 +50,14 @@ public class IdleAger {
     }
 
     private static void convertUC(){
-        if(UIdata.charCount > moneyCounter * UIdata.charReq){
-            moneyCounter += UIdata.UCearned;
+        if(UIdata.charCount > moneyCounter * IdleItem.charReq){
+            moneyCounter += IdleItem.UCearned;
             UIdata.charCurrency++;
         }
     }
 
     private static void addUC(){
         UIdata.charCurrency += 1; // might add as future upgrade
-    }
-
-    private static void setCharReq(int newReq){
-        UIdata.charReq = newReq;
-    }
-
-    private static void setUCearned(int newUC){
-        UIdata.UCearned = newUC;
-    }
-
-    private static void setUCpassive(int newInterval){
-        UIdata.UCpassive = newInterval;
     }
 
     private static boolean isLazy(){
