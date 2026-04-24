@@ -14,6 +14,7 @@ public class IdleAger {
     private static final int tickAmount = 16; // framerate
     private static final int maxFdur = 60016; // focus duration
     private static int moneyCounter = 1;
+
     
     private static Timer timer = new Timer(tickAmount, e-> update());
     private static Timer UCtimer = new Timer(IdleItem.UCpassive, e-> addUC()); // timer for passive gain
@@ -64,8 +65,12 @@ public class IdleAger {
         return UIdata.focusTimer <= 0;
     }
 
-    public static void setPause(boolean p){
-        paused = p;
+    public static void setPause(){
+        paused = !paused;
+    }
+
+    public static boolean getPause(){
+        return paused;
     }
 
     private static void resetTimer(){

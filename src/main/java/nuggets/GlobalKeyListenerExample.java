@@ -8,22 +8,6 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 public class GlobalKeyListenerExample implements NativeKeyListener {
 
     IdleAger him = new IdleAger();
-
-    static int c = 0;
-    @Override
-	public void nativeKeyPressed(NativeKeyEvent e) {
-		System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-        
-        
-        // if escape is pressed, program ends
-		// if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
-        //     		try {
-        //         		GlobalScreen.unregisterNativeHook();
-        //     		} catch (NativeHookException nativeHookException) {
-        //         		nativeHookException.printStackTrace();
-        //     		}
-        // 	}
-	}
     @Override
 	public void nativeKeyReleased(NativeKeyEvent e) {
         // call method to update idle time

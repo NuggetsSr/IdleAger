@@ -31,8 +31,7 @@ public class IdleUI{
     private static JPanel panel = new JPanel();
     private static ImageIcon icon = new ImageIcon("/Users/yifancai/Documents/IdleAger/image.png");
     private static JLabel animation = new JLabel(icon);
-    private static JButton sButton = new JButton("Start Session");
-    private static JButton eButton = new JButton("End Session");
+    private static JButton sButton = new JButton("Unpause");
     private static JButton gButton = new JButton("Switch Game State");
     private static JButton tButton = new JButton("Switch Track State");
     private static JButton EnterSButton = new JButton("Open Shop");
@@ -57,13 +56,14 @@ public class IdleUI{
         // if(!isLazy() && !paused){
             UIcharCount.setText("Letters Typed: " + Integer.toString(UIdata.charCount));
             UItimer.setText("Time Left: " + formatTime(UIdata.focusTimer/1000));
-            UIUncCoin.setText("Unc Coin Earned: " + Integer.toString(UIdata.charCurrency));
+            UIUncCoin.setText("Unc Coin Earned: " + Double.toString(UIdata.charCurrency));
+            sButton.setText((IdleAger.getPause() ? "Pause":"Unpause"));
         // }
     }
 
     private static void updateGameUI(){
         animation.setBounds(aniFrame * (frameCounter % 4),-10,960,240);
-        UIGUncCoin.setText("Unc Coin Earned: " + Integer.toString(UIdata.charCurrency));
+        UIGUncCoin.setText("Unc Coin Earned: " + Double.toString(UIdata.charCurrency));
         frameCounter+=1;
     }
 
@@ -93,17 +93,14 @@ public class IdleUI{
     public static void init(){ // initializes all the UI
         GlobalKeyListenerExample.init();
         // set an actionlistener in main, add it here
+
+        JLabel up1cost = new JLabel("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0)));
+        JLabel up2cost = new JLabel("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1)));
+        JLabel up3cost = new JLabel("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2)));
         sButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                IdleAger.setPause(false);
-            }
-        });
-
-        eButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                IdleAger.setPause(true);
+                IdleAger.setPause();
             }
         });
         gButton.addActionListener(new ActionListener(){
@@ -123,6 +120,11 @@ public class IdleUI{
             @Override
             public void actionPerformed(ActionEvent e) {
                 stateMachine(false, true);
+                up1cost.setText("Up 1 Cost: " + Double.toString(IdleShop.getItemCost(0))); 
+                up2cost.setText("Up 2 Cost: " + Double.toString(IdleShop.getItemCost(1))); 
+                up3cost.setText("Up 3 Cost: " + Double.toString(IdleShop.getItemCost(2))); 
+                
+
             }
         });
         ExitSButton.addActionListener(new ActionListener(){
@@ -175,10 +177,6 @@ public class IdleUI{
 
         JPanel SPanel = new JPanel();
         SPanel.setLayout(new BoxLayout(SPanel,BoxLayout.Y_AXIS));
-        JLabel up1cost = new JLabel();
-        up1cost.setText("Up 1 Cost: " + Integer.toString(IdleShop.getItemCost(0))); 
-        JLabel up2cost = new JLabel("Up 2 Cost: " + IdleShop.getItemCost(1));
-        JLabel up3cost = new JLabel("Up 3 Cost: " + IdleShop.getItemCost(2));
         SPanel.add(ExitSButton);
         SPanel.add(UIUncCoin);
         SPanel.add(up1cost);
@@ -222,7 +220,6 @@ public class IdleUI{
         JPanel bPanel = new JPanel();
         bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.Y_AXIS));
         bPanel.add(sButton);
-        bPanel.add(eButton);
         bPanel.add(EnterSButton);
         bPanel.add(gButton);
         bPanel.setSize(240,240);
