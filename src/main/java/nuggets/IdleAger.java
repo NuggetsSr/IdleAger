@@ -51,8 +51,8 @@ public class IdleAger {
 
     private static void convertUC(){
         if(UIdata.charCount > moneyCounter * IdleItem.charReq){
-            moneyCounter += IdleItem.UCearned;
-            UIdata.charCurrency++;
+            moneyCounter += 1;
+            UIdata.charCurrency += IdleItem.UCearned;
         }
     }
 
@@ -78,9 +78,11 @@ public class IdleAger {
     }
 
     public static void main(String[] args) {
-        System.out.println("hello world");
         UIdata.focusTimer = maxFdur;
+        IdleShop.initShop();
         IdleUI.init();
         timer.start();
+        System.out.println();
+
     }
 }

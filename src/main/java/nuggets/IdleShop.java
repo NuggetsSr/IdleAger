@@ -19,12 +19,12 @@ public class IdleShop{
         items.add(upgrade3);
     }
 
-    public static int getItemCost(int index){
-        return items.get(index).itemPrice;
+    public static int getItemCost(int i){
+        return items.get(i).itemPrice;
     }
 
     public static void setCharReq(){ // lowers the requirement 
-        if(UIdata.charCurrency > upgrade1.itemPrice){
+        if(UIdata.charCurrency >= upgrade1.itemPrice){
             UIdata.charCurrency -= upgrade1.itemPrice;
             IdleItem.charReq -= upgrade1.itemInit;
             // price scale 
@@ -33,7 +33,7 @@ public class IdleShop{
     }
 
     public static void setUCearned(){ // increase how much UC earned per quota
-        if(UIdata.charCurrency > upgrade2.itemPrice){
+        if(UIdata.charCurrency >= upgrade2.itemPrice){
             UIdata.charCurrency -= upgrade2.itemPrice;
             IdleItem.UCearned += upgrade2.itemInit;
             // price scale 
@@ -42,7 +42,7 @@ public class IdleShop{
     }
 
     public static void setUCpassive(){ // decreases time interval between earning new UC
-        if(UIdata.charCurrency > upgrade3.itemPrice){
+        if(UIdata.charCurrency >= upgrade3.itemPrice){
             UIdata.charCurrency -= upgrade3.itemPrice;
             IdleItem.UCpassive -= upgrade3.itemInit;
             // price scale 
