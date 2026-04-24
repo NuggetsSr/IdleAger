@@ -1,5 +1,10 @@
 package nuggets;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -27,7 +33,6 @@ public class IdleUI{
     private static JButton eButton = new JButton("End Session");
     private static JButton gButton = new JButton("Switch Game State");
     private static JButton tButton = new JButton("Switch Track State");
-
     private static UIdata displayData = new UIdata();
 
     private static int aniFrame = -240; // amount of pixels to shift animation by 
@@ -80,18 +85,19 @@ public class IdleUI{
         Gframe.setVisible(false);
     }
 
-    public static void main(String[] args) {
+    public static void init(){ // initializes all the UI
+        GlobalKeyListenerExample.init();
         sButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                startS();
+                IdleAger.setPause(false);
             }
         });
 
         eButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                endS();
+                IdleAger.setPause(true);
             }
         });
         gButton.addActionListener(new ActionListener(){
@@ -109,6 +115,68 @@ public class IdleUI{
         
         aniTimer.start();
 
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) size.getWidth();
+        int length = (int) size.getHeight();
+        
+        Mframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Mframe.setSize(240,240);
+        Mframe.setLocation(width-240, length-240);
+        Mframe.setAlwaysOnTop(true);
+        Mframe.setResizable(false);
+
+        animation.setBounds(0,-10,960,240);
+        tButton.setBounds(100, 50, 200, 200);
+        
+        //layers for Game animation and buttons
+        JLayeredPane Glayers = new JLayeredPane();
+        JPanel GPanel = new JPanel();
+        Glayers.setLayout(new FlowLayout());
+        GPanel.setLayout(new BorderLayout());
+        GPanel.add(tButton, BorderLayout.CENTER);
+        UIGUncCoin.setForeground(new Color(255,255,255));
+        GPanel.add(UIGUncCoin, BorderLayout.SOUTH);
+        GPanel.setOpaque(false);
+        // Glayers.add(tButton, 2);
+        // Glayers.add(UIGcharCurrency, 3);
+        Glayers.add(GPanel,2);
+        Glayers.add(animation,1);
+        // Glayers.moveToFront(tButton);
+        Gframe.add(Glayers);
+        // Gframe.add(UIGcharCurrency);
+        // Gframe.add(GPanel);
+
+        Gframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Gframe.setSize(240,240);
+        Gframe.setLocation(width-240, length-240);
+        Gframe.setAlwaysOnTop(true);
+        Gframe.setResizable(false);
+
+        popFrame.setSize(10000, 10000);
+
+        sButton.setSize(new Dimension(100,50));
+        eButton.setSize(new Dimension(100,50));
+        //   
+        
+        UIcharCount.setText("0");
+        // button panel for buttons (start session, end session, switch to game)
+        JPanel bPanel = new JPanel();
+        bPanel.setLayout(new BorderLayout());
+        bPanel.add(sButton, BorderLayout.NORTH);
+        bPanel.add(eButton, BorderLayout.CENTER);
+        bPanel.add(gButton, BorderLayout.SOUTH);
+        bPanel.setSize(50,240);
+        panel.setLayout(new FlowLayout());
+        panel.add(UIcharCount);
+        panel.add(UItimer);
+        panel.add(UIUncCoin);
+        panel.add(bPanel);
+        Mframe.add(panel);
+        Mframe.setVisible(true);
+
+        System.out.println("done");
+
     }
+
 
 }
